@@ -1,0 +1,30 @@
+{
+  "name": "hk-ai-intelligence-hub",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hong Kong AI Intelligence Hub — Traditional Chinese AI news, model rankings, Skills and MCP discovery.",
+  "scripts": {
+    "dev": "next dev -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "node tests/scoring.test.mjs"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "lucide-react": "latest",
+    "next": "latest",
+    "openai": "^7.4.0",
+    "react": "latest",
+    "react-dom": "latest",
+    "rss-parser": "^3.13.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  }
+}
