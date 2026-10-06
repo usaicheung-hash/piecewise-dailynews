@@ -1,1 +1,5 @@
-import { getExtensions } from "../../lib/data-live";import { Page,ExtCard } from "../ui/components";export const dynamic='force-dynamic';export default function Extensions(){const extensions=getExtensions();return <Page title="AI Agent Skills & MCP Hub" subtitle="集中搜尋 Skills 與 MCP 資源，查看用途、來源、更新時間與安全提示。"><section className="section"><div className="toolbar"><input className="input" placeholder="搜尋 GPT / GitHub / Figma / Database / Research"/><select><option>全部類型</option><option>Skill</option><option>MCP</option></select><select><option>排序：Trending</option><option>Most starred</option><option>Recently updated</option></select></div></section><section className="section grid">{extensions.map((e:any)=><div className="span-3" key={e.slug}><ExtCard e={e}/></div>)}</section></Page>}
+import { getExtensions } from '../../lib/data-live';
+import { Page } from '../ui/components';
+import { ResourceDirectory } from '../ui/directories';
+export const dynamic = 'force-dynamic';
+export default function Extensions() { return <Page title="連接工具，擴展可能。" subtitle="搜尋 Skills 同 MCP；用用途、來源同權限，揀啱 Agent 嘅下一項能力。"><ResourceDirectory items={getExtensions()} /></Page>; }

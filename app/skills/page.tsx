@@ -1,1 +1,5 @@
-import { getExtensions } from "../../lib/data-live";import { Page,ExtCard } from "../ui/components";export const dynamic='force-dynamic';export default function Skills(){const skills=getExtensions('Skill');return <Page title="Skills Directory" subtitle="Skill 是可重用工作流程，協助 AI Agent 按清晰步驟完成特定任務。"><section className="section grid directory-grid">{skills.map((e:any)=><div className="span-4" key={e.slug}><ExtCard e={e}/></div>)}</section></Page>}
+import { getExtensions } from '../../lib/data-live';
+import { Page } from '../ui/components';
+import { ResourceDirectory } from '../ui/directories';
+export const dynamic = 'force-dynamic';
+export default function Skills() { return <Page title="Skills · 做事有方法。" subtitle="可重用嘅工作流程，幫 Agent 按清楚步驟完成任務。"><ResourceDirectory items={getExtensions('Skill')} fixedType="Skill" /></Page>; }
