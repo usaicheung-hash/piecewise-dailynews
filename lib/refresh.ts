@@ -1,10 +1,11 @@
 import Parser from 'rss-parser';
+import { tokenPricePerMillion } from './calculator';
 import OpenAI from 'openai';
 import fs from 'node:fs';
 import path from 'node:path';
 import { getDb, nowIso } from './db';
 import { seedIfEmpty } from './seed';
-import { modelValueScore, extensionTrendingScore } from './scoring';
+import { modelValueScore, extensionTrendingScore } from './model-scoring';
 
 const rssSources = [
   {name:'OpenAI Blog', url:'https://openai.com/news/rss.xml', category:'Official', country:'US'},
@@ -43,7 +44,7 @@ export async function refreshNews(){ seedIfEmpty(); const db=getDb(); const pars
 
 export async function refreshModels(){ seedIfEmpty(); const db=getDb(); const job=db.prepare(`insert into refresh_jobs(kind,status,started_at) values('models','running',?)`).run(nowIso()).lastInsertRowid; let upserted=0; let error='';
   try{ const res=await fetch('https://openrouter.ai/api/v1/models',{headers:{'User-Agent':'PieceWise AI'}}); if(!res.ok) throw new Error(`OpenRouter ${res.status}`); const data:any=await res.json(); const stmt=db.prepare(`insert or replace into models_db(slug,name,provider,context_length,input_price,output_price,pricing_scope,popularity_scope,overall_score,coding_score,reasoning_score,agentic_score,speed_score,value_score,source,source_url,last_verified_at,raw_json) values(@slug,@name,@provider,@context_length,@input_price,@output_price,@pricing_scope,@popularity_scope,@overall_score,@coding_score,@reasoning_score,@agentic_score,@speed_score,@value_score,@source,@source_url,@last_verified_at,@raw_json)`);
-    for(const m of (data.data||[]).slice(0,80)){ const name=m.name||m.id; const provider=(m.id||'').split('/')[0]||'Unknown'; const input=Number(m.pricing?.prompt||0)*1_000_000 || null; const output=Number(m.pricing?.completion||0)*1_000_000 || null; const heuristic=Math.max(40, Math.min(92, 60 + Math.log10((m.context_length||8000)/8000)*8)); const row={slug:slugify(m.id||name),name,provider,context_length:m.context_length||null,input_price:input,output_price:output,pricing_scope:'OpenRouter listed API price / 1M tokens',popularity_scope:'OpenRouter public model catalogue; not global usage',overall_score:heuristic,coding_score:null,reasoning_score:null,agentic_score:null,speed_score:null,value_score:0,source:'OpenRouter',source_url:'https://openrouter.ai/api/v1/models',last_verified_at:nowIso(),raw_json:JSON.stringify(m)}; row.value_score=modelValueScore(row); stmt.run(row); upserted++; }
+    for(const m of (data.data||[]).slice(0,80)){ const name=m.name||m.id; const provider=(m.id||'').split('/')[0]||'Unknown'; const input=tokenPricePerMillion(m.pricing?.prompt); const output=tokenPricePerMillion(m.pricing?.completion); const heuristic=Math.max(40, Math.min(92, 60 + Math.log10((m.context_length||8000)/8000)*8)); const row={slug:slugify(m.id||name),name,provider,context_length:m.context_length||null,input_price:input,output_price:output,pricing_scope:'OpenRouter listed API price / 1M tokens',popularity_scope:'OpenRouter public model catalogue; not global usage',overall_score:heuristic,coding_score:null,reasoning_score:null,agentic_score:null,speed_score:null,value_score:0,source:'OpenRouter',source_url:'https://openrouter.ai/api/v1/models',last_verified_at:nowIso(),raw_json:JSON.stringify(m)}; row.value_score=modelValueScore(row); stmt.run(row); upserted++; }
     db.prepare('update refresh_jobs set status=?, finished_at=?, summary=? where id=?').run('success',nowIso(),JSON.stringify({upserted}),job);
   }catch(e:any){ error=e.message||String(e); db.prepare('update refresh_jobs set status=?, finished_at=?, error=? where id=?').run('failed',nowIso(),error,job); }
   return {kind:'models',status:error?'failed':'success',upserted,error}; }

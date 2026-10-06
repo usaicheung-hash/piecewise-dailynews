@@ -1,1 +1,5 @@
-import { getModels } from "../../lib/data-live";import { Page } from "../ui/components";import { modelValueScore } from "../../lib/scoring";export const dynamic='force-dynamic';export default function Compare(){const models=getModels().slice(0,4);return <Page title="Model 比較" subtitle="比較最多 4 個 model：能力、context、速度、價格與 value。"><section className="section card table-wrap"><table className="table"><thead><tr><th>Model</th><th>Provider</th><th>Overall</th><th>Context</th><th>Input</th><th>Output</th><th>Value</th><th>應該揀邊個？</th></tr></thead><tbody>{models.map((m:any)=><tr key={m.slug}><td>{m.name}</td><td>{m.provider}</td><td>{Math.round(m.overall_score??0)}</td><td>{m.context_length?Number(m.context_length).toLocaleString():'—'}</td><td>{m.input_price!=null?`$${Number(m.input_price).toFixed(3)}`:'—'}</td><td>{m.output_price!=null?`$${Number(m.output_price).toFixed(3)}`:'—'}</td><td className="score">{modelValueScore(m)}</td><td>{(m.value_score??0)>75?'性價比 / general':'按用途再比較'}</td></tr>)}</tbody></table></section></Page>}
+import { getModels } from '../../lib/data-live';
+import { Page } from '../ui/components';
+import { ModelCompare } from '../ui/model-tools';
+export const dynamic = 'force-dynamic';
+export default function Compare() { return <Page title="Model 並排比較" subtitle="揀最多 4 個模型，用同一組規格比較價格、上下文同資料範圍。"><ModelCompare models={getModels()} /></Page>; }

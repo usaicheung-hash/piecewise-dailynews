@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import { estimateCost, tokenPricePerMillion } from '../lib/calculator.ts';
+
+assert.equal(estimateCost(1.25, 10, 1_000_000, 200_000), 3.25);
+assert.equal(estimateCost(1.25, 10, 2_000_000, 400_000), 6.5);
+assert.equal(estimateCost(0, 0, 1_000_000, 200_000), 0);
+assert.equal(estimateCost(1.25, 10, 0, 0), 0);
+assert.equal(estimateCost(1.25, 10, 0, 200_000), 2);
+assert.equal(estimateCost(null, 10, 0, 200_000), null);
+assert.equal(estimateCost(1.25, null, 1_000_000, 0), null);
+assert.equal(estimateCost(1.25, 10, -1, 0), null);
+assert.equal(estimateCost(1.25, 10, Infinity, 0), null);
+assert.equal(estimateCost(1.25, 10, NaN, 0), null);
+assert.ok(Math.abs(estimateCost(0.000001, 0, 1, 0) - 1e-12) < 1e-20);
+assert.equal(tokenPricePerMillion('0'), 0);
+assert.equal(tokenPricePerMillion(0), 0);
+assert.equal(tokenPricePerMillion('0.00000125'), 1.25);
+assert.equal(tokenPricePerMillion(null), null);
+assert.equal(tokenPricePerMillion(undefined), null);
+assert.equal(tokenPricePerMillion(''), null);
+assert.equal(tokenPricePerMillion('unknown'), null);
+assert.equal(tokenPricePerMillion('-1'), null);
+assert.equal(tokenPricePerMillion(' '), null);
+assert.equal(tokenPricePerMillion([]), null);
+assert.equal(tokenPricePerMillion(false), null);
+console.log('calculator tests passed');

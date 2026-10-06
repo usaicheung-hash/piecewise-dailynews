@@ -1,1 +1,5 @@
-import { getNews } from "../../../lib/data-live";import { Page } from "../../ui/components";export const dynamic='force-dynamic';export default function HKNews(){const hk=getNews({hk:true,limit:50});return <Page title="香港 AI 今日焦點" subtitle="追蹤香港政府、企業、大學、金融科技、初創及政策相關的 AI 消息。"><section className="section grid">{hk.length?hk.map((n:any)=><article className="card span-6" key={n.id}><span className="tag hk">香港 AI</span><h3>{n.zh_title}</h3><p>{n.zh_summary}</p><p><b>香港影響：</b>{n.why_it_matters||'—'}</p><a href={n.source_url} target="_blank">來源：{n.source}</a></article>):<div className="card span-12">今日暫未有重要香港 AI 新聞。</div>}</section></Page>}
+import { getNews } from '../../../lib/data-live';
+import { Page } from '../../ui/components';
+import { NewsDirectory } from '../../ui/directories';
+export const dynamic = 'force-dynamic';
+export default function HKNews() { return <Page title="AI 同香港，有咩關係？" subtitle="聚焦本地企業、大學、政策同實際應用。"><NewsDirectory items={getNews({hk: true, limit: 50})} /></Page>; }

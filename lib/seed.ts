@@ -1,5 +1,5 @@
 import { getDb, nowIso } from './db';
-import { modelValueScore, extensionTrendingScore } from './scoring';
+import { modelValueScore, extensionTrendingScore } from './model-scoring';
 
 export function seedIfEmpty(){
   const db=getDb(); const now=nowIso();

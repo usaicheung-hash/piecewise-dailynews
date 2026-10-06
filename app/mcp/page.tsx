@@ -1,1 +1,5 @@
-import { getExtensions } from "../../lib/data-live";import { Page,ExtCard } from "../ui/components";export const dynamic='force-dynamic';export default function MCP(){const mcp=getExtensions('MCP');return <Page title="MCP Server Directory" subtitle="MCP 讓 AI Agent 連接工具、資料與服務；安裝前可先了解用途、來源和權限。"><section className="section grid directory-grid">{mcp.map((e:any)=><div className="span-4" key={e.slug}><ExtCard e={e}/></div>)}</section></Page>}
+import { getExtensions } from '../../lib/data-live';
+import { Page } from '../ui/components';
+import { ResourceDirectory } from '../ui/directories';
+export const dynamic = 'force-dynamic';
+export default function MCP() { return <Page title="MCP · 接上更多能力。" subtitle="連接工具、資料同服務。先睇用途、來源同權限，再決定點樣用。"><ResourceDirectory items={getExtensions('MCP')} fixedType="MCP" /></Page>; }

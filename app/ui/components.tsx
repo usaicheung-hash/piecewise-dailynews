@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { modelValueScore, extensionTrendingScore } from "../../lib/scoring";
+import { modelValueScore, extensionTrendingScore } from "../../lib/model-scoring";
+import { hkDate } from "../../lib/format";
 
 const trustLabels: Record<string, string> = {
   Official: "官方來源",
@@ -10,7 +11,7 @@ const trustLabels: Record<string, string> = {
 
 export function Page({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
-    <main className="shell page-shell">
+    <main id="main-content" className="shell page-shell">
       <section className="page-masthead">
         <p>PIECEWISE AI · HONG KONG</p>
         <h1>{title}</h1>
@@ -56,7 +57,7 @@ export function ModelTable({ models }: { models: any[] }) {
 
 export function ExtCard({ e }: { e: any }) {
   const href = `/${e.type === "Skill" ? "skills" : "mcp"}/${e.slug}`;
-  const updated = e.last_updated_at || e.last_verified_at;
+  const updated = e.last_updated_at;
   const trust = trustLabels[e.trust_level] || e.trust_level || "來源待核對";
   return (
     <article className="card market-card">
@@ -70,7 +71,7 @@ export function ExtCard({ e }: { e: any }) {
         <p className="muted market-card__description">{e.description_zh_hk}</p>
       </div>
       <footer className="market-card__footer">
-        <p className="small muted market-card__meta">發布者：{e.publisher || "待核對"}{updated ? ` · 更新日期：${updated}` : ""}</p>
+        <p className="small muted market-card__meta">發布者：{e.publisher || "待核對"}{updated ? ` · 來源更新：${hkDate(updated)}` : ' · 來源更新時間待確認'}</p>
         <div className="market-card__actions">
           <b>熱門參考分數 {e.overall_trending_score || extensionTrendingScore(e)}</b>
           <Link className="btn secondary" href={href}>睇詳情</Link>

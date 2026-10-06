@@ -1,1 +1,5 @@
-import { getNews } from "../../lib/data-live";import { Page } from "../ui/components";export const dynamic='force-dynamic';export default function News(){const news=getNews({limit:50});return <Page title="AI 新聞" subtitle="精選近期 AI 消息，以香港繁體中文整理重點，並保留原始來源方便核對。"><section className="section grid">{news.map((n:any)=><article className="card span-6" key={n.id}><span className={n.hk_relevance?'tag hk':'tag'}>{n.category||'AI'}</span><h3>{n.zh_title}</h3><p>{n.zh_summary}</p><p><b>點解值得留意：</b>{n.why_it_matters||'—'}</p><a href={n.source_url} target="_blank">原始來源：{n.source}</a><p className="small muted">發布：{n.published_at?new Date(n.published_at).toLocaleString('zh-HK'):'時間待確認'} · 更新：{new Date(n.fetched_at).toLocaleString('zh-HK')}</p></article>)}</section></Page>}
+import { getNews } from '../../lib/data-live';
+import { Page } from '../ui/components';
+import { NewsDirectory } from '../ui/directories';
+export const dynamic = 'force-dynamic';
+export default function News() { return <Page title="少啲雜訊，多啲重點。" subtitle="AI 新聞、來源同實際影響，逐件睇清。保留原始連結，方便自己核對。"><NewsDirectory items={getNews({limit: 50})} /></Page>; }
